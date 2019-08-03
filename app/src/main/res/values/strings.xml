@@ -19,5 +19,8 @@
 
     <string name="update_information">Update Information</string>
     <string name="sign_out">Sign Out</string>
+    <string name="nearby_restaurant">Nearby Restaurant</string>
+    <string name="order_history">Order History</string>
+    <string name="update_info">Update Info</string>
 
 </resources>

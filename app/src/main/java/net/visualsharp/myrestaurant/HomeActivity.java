@@ -1,5 +1,6 @@
 package net.visualsharp.myrestaurant;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
@@ -96,6 +98,12 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_log_out) {
             signOut();
+        }else if (id == R.id.nav_nearby){
+
+        }else if (id == R.id.nav_order_history){
+
+        }else if (id == R.id.nav_update_info){
+
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -104,12 +112,22 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void signOut() {
-        Common.currentUser = null;
+        //Here we will made alert dialog to confirm
+        AlertDialog confirmDialog = new AlertDialog.Builder(this)
+                .setTitle("Sign out")
+                .setMessage("Do you really want to sign out?")
+                .setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton("OK", (dialog, which) -> {
+                    Common.currentUser = null;
 
-        AccountKit.logOut();
-        Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear all previous activity
-        startActivity(intent);
-        finish();
+                    AccountKit.logOut();
+                    Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear all previous activity
+                    startActivity(intent);
+                    finish();
+                }).create();
+
+        confirmDialog.show();
+
     }
 }
