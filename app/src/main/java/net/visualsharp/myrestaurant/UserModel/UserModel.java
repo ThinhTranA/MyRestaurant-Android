@@ -7,12 +7,20 @@ public class UserModel {
     private  String message;
     private List<User> result;
 
-    public void isSuccess(boolean success){
+    public boolean isSuccess(){
+        return success;
+    }
+
+    public void setSuccess(boolean success){
         this.success = success;
     }
 
     public  String getMessage(){
         return message;
+    }
+
+    public List<User> getResult() {
+        return result;
     }
 
     public void setMessage(String message){
