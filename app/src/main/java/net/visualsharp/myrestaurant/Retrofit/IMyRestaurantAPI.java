@@ -13,11 +13,11 @@ import retrofit2.http.Query;
 public interface IMyRestaurantAPI {
     @GET("user")
     Observable<UserModel> getUser(@Query("key") String apiKey,
-                                  @Query("userPhone") String userPhone);
+                                  @Query("fbid") String fbid);
 
     @POST("user")
     @FormUrlEncoded
-    Observable<UpdateUserModel> updateUserInfo(@Field("Key") String apiKey,
+    Observable<UpdateUserModel> updateUserInfo(@Field("key") String apiKey,
                                                @Field("userPhone") String userPhone,
                                                @Field("userName") String userName,
                                                @Field("userAddress") String userAddress,

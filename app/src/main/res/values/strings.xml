@@ -17,4 +17,6 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
 
+    <string name="update_information">Update Information</string>
+
 </resources>

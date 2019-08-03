@@ -39,6 +39,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
+/*
+* Flow:
+*   If already login with Facebook Account Kit but never update info(register account with backend)
+*       - Splash screen -> Update User -> HomeActivity
+*   If already register account
+*       - Splash screen -> HomeActivity
+* */
+
 public class SplashScreen extends AppCompatActivity {
 
     IMyRestaurantAPI myRestaurantAPI;
@@ -80,9 +88,9 @@ public class SplashScreen extends AppCompatActivity {
                                         startActivity(intent);
                                         finish();
                                     }
-                                    else // If user is not in database
+                                    else // If user is not in database, start UpdateInfo for register
                                     {
-                                        Intent intent = new Intent(SplashScreen.this, MainActivity.class);
+                                        Intent intent = new Intent(SplashScreen.this, UpdateInfoActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }
