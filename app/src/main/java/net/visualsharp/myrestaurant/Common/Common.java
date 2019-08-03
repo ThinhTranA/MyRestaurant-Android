@@ -1,6 +1,6 @@
 package net.visualsharp.myrestaurant.Common;
 
-import net.visualsharp.myrestaurant.UserModel.User;
+import net.visualsharp.myrestaurant.Model.User;
 
 public class Common {
 

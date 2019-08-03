@@ -1,7 +1,8 @@
 package net.visualsharp.myrestaurant.Retrofit;
 
-import net.visualsharp.myrestaurant.UserModel.UpdateUserModel;
-import net.visualsharp.myrestaurant.UserModel.UserModel;
+import net.visualsharp.myrestaurant.Model.RestaurantModel;
+import net.visualsharp.myrestaurant.Model.UpdateUserModel;
+import net.visualsharp.myrestaurant.Model.UserModel;
 
 import io.reactivex.Observable;
 import retrofit2.http.Field;
@@ -15,6 +16,9 @@ public interface IMyRestaurantAPI {
     Observable<UserModel> getUser(@Query("key") String apiKey,
                                   @Query("fbid") String fbid);
 
+    @GET("restaurant")
+    Observable<RestaurantModel> getRestaurant(@Query("key") String apiKey);
+
     @POST("user")
     @FormUrlEncoded
     Observable<UpdateUserModel> updateUserInfo(@Field("key") String apiKey,
@@ -22,4 +26,6 @@ public interface IMyRestaurantAPI {
                                                @Field("userName") String userName,
                                                @Field("userAddress") String userAddress,
                                                @Field("fbid") String fbid);
+
+
 }

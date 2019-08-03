@@ -1,4 +1,4 @@
-package net.visualsharp.myrestaurant.UserModel;
+package net.visualsharp.myrestaurant.Model;
 
 import java.util.List;
 

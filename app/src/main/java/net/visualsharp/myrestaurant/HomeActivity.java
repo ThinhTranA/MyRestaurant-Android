@@ -23,16 +23,49 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.visualsharp.myrestaurant.Common.Common;
+import net.visualsharp.myrestaurant.Model.EventBus.RestaurantLoadEvent;
+import net.visualsharp.myrestaurant.Retrofit.IMyRestaurantAPI;
+import net.visualsharp.myrestaurant.Retrofit.RetrofitClient;
+
+import org.greenrobot.eventbus.EventBus;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import dmax.dialog.SpotsDialog;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+import ss.com.bannerslider.Slider;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     TextView txt_user_name, txt_user_phone;
+
+    @BindView(R.id.banner_slider)
+    Slider banner_slider;
+    @BindView(R.id.recycler_restaurant)
+    RecyclerView recycler_restaurant;
+
+    IMyRestaurantAPI myRestaurantAPI;
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    android.app.AlertDialog dialog;
+
+    @Override
+    protected void onDestroy() {
+        compositeDisposable.clear();
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +73,12 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show());
+
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -57,6 +93,42 @@ public class HomeActivity extends AppCompatActivity
 
         txt_user_name.setText(Common.currentUser.getName());
         txt_user_name.setText(Common.currentUser.getUserPhone());
+        
+        init();
+        initView();
+
+        loadRestaurant();
+    }
+
+    private void loadRestaurant() {
+        dialog.show();
+
+        compositeDisposable.add(
+            myRestaurantAPI.getRestaurant(Common.API_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(restaurantModel -> {
+                    //User EventBus to send local event set adapter and slider
+                            EventBus.getDefault().post( new RestaurantLoadEvent(true, restaurantModel.getResult()));
+
+                        },
+                        throwable -> {
+                            EventBus.getDefault().post( new RestaurantLoadEvent(false, throwable.getMessage()));
+                        })
+        );
+    }
+
+    private void initView() {
+        ButterKnife.bind(this);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recycler_restaurant.setLayoutManager(layoutManager);
+        recycler_restaurant.addItemDecoration(new DividerItemDecoration(this,layoutManager.getOrientation()));
+    }
+
+    private void init() {
+        dialog = new SpotsDialog.Builder().setContext(this).setCancelable(false).build();
+        myRestaurantAPI = RetrofitClient.getInstance(Common.API_RESTAURANT_ENDPOINT).create(IMyRestaurantAPI.class);
     }
 
     @Override
