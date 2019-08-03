@@ -32,12 +32,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.visualsharp.myrestaurant.Adapter.RestaurantSliderAdapter;
 import net.visualsharp.myrestaurant.Common.Common;
 import net.visualsharp.myrestaurant.Model.EventBus.RestaurantLoadEvent;
+import net.visualsharp.myrestaurant.Model.Restaurant;
 import net.visualsharp.myrestaurant.Retrofit.IMyRestaurantAPI;
 import net.visualsharp.myrestaurant.Retrofit.RetrofitClient;
+import net.visualsharp.myrestaurant.Services.PicassoImageLoadingService;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -129,6 +136,8 @@ public class HomeActivity extends AppCompatActivity
     private void init() {
         dialog = new SpotsDialog.Builder().setContext(this).setCancelable(false).build();
         myRestaurantAPI = RetrofitClient.getInstance(Common.API_RESTAURANT_ENDPOINT).create(IMyRestaurantAPI.class);
+
+        Slider.init(new PicassoImageLoadingService());
     }
 
     @Override
@@ -200,6 +209,41 @@ public class HomeActivity extends AppCompatActivity
                 }).create();
 
         confirmDialog.show();
+    }
 
+    /*
+    * REGISTER EVENT BUS
+    * */
+    @Override
+    protected void onStart(){
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    //Listen EventBus
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void processRestaurantLoadEvent(RestaurantLoadEvent event)
+    {
+        if(event.isSuccess())
+        {
+            displayBanner(event.getRestaurantList());
+        }
+        else
+        {
+            Toast.makeText(this,"[RESTAURANT LOAD]"+event.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+
+        dialog.dismiss();
+    }
+
+    private void displayBanner(List<Restaurant> restaurantList)
+    {
+        banner_slider.setAdapter(new RestaurantSliderAdapter(restaurantList));
     }
 }
