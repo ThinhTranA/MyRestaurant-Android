@@ -67,9 +67,18 @@ public class SplashScreen extends AppCompatActivity {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(userModel -> {
 
-                                    if(userModel.isSuccess()) // If user available in database
+                                    if(userModel.isSuccess()) // If user is in database
                                     {
                                         Common.currentUser = userModel.getResult().get(0);
+                                        Intent intent = new Intent(SplashScreen.this, HomeActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                    else // If user is not in database
+                                    {
+                                        Intent intent = new Intent(SplashScreen.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
                                     }
 
                                         },
