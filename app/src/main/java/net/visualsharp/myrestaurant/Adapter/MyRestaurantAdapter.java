@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import net.visualsharp.myrestaurant.Interface.IOnRecyclerViewClickListener;
 import net.visualsharp.myrestaurant.Model.Restaurant;
 import net.visualsharp.myrestaurant.R;
 import net.visualsharp.myrestaurant.Services.PicassoImageLoadingService;
@@ -47,6 +49,14 @@ public class MyRestaurantAdapter extends RecyclerView.Adapter<MyRestaurantAdapte
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Picasso.get().load(restaurantList.get(position).getImage()).into(holder.img_restaurant);
         holder.txt_restaurant_address.setText(new StringBuilder((restaurantList.get(position).getName())));
+
+        holder.setListener(new IOnRecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                //TODO: Implement later
+                Toast.makeText(context,""+restaurantList.get(position).getName(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -54,7 +64,7 @@ public class MyRestaurantAdapter extends RecyclerView.Adapter<MyRestaurantAdapte
         return restaurantList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.txt_restaurant_name)
         TextView txt_restaurant_name;
         @BindView(R.id.txt_restaurant_address)
@@ -62,10 +72,23 @@ public class MyRestaurantAdapter extends RecyclerView.Adapter<MyRestaurantAdapte
         @BindView(R.id.img_restaurant)
         ImageView img_restaurant;
 
+        IOnRecyclerViewClickListener listener;
+
+        public void setListener(IOnRecyclerViewClickListener listener) {
+            this.listener = listener;
+        }
+
         Unbinder unbinder;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             unbinder = ButterKnife.bind(this,itemView);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onClick(v,getAdapterPosition());
         }
     }
 }
