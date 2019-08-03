@@ -32,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.visualsharp.myrestaurant.Adapter.MyRestaurantAdapter;
 import net.visualsharp.myrestaurant.Adapter.RestaurantSliderAdapter;
 import net.visualsharp.myrestaurant.Common.Common;
 import net.visualsharp.myrestaurant.Model.EventBus.RestaurantLoadEvent;
@@ -233,6 +234,7 @@ public class HomeActivity extends AppCompatActivity
         if(event.isSuccess())
         {
             displayBanner(event.getRestaurantList());
+            displayRestaurant(event.getRestaurantList());
         }
         else
         {
@@ -240,6 +242,11 @@ public class HomeActivity extends AppCompatActivity
         }
 
         dialog.dismiss();
+    }
+
+    private void displayRestaurant(List<Restaurant> restaurantList) {
+        MyRestaurantAdapter adapter = new MyRestaurantAdapter(this, restaurantList);
+        recycler_restaurant.setAdapter(adapter);
     }
 
     private void displayBanner(List<Restaurant> restaurantList)
