@@ -3,6 +3,7 @@ package net.visualsharp.myrestaurant;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -32,6 +33,7 @@ import net.visualsharp.myrestaurant.Retrofit.RetrofitClient;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import dmax.dialog.SpotsDialog;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -41,6 +43,7 @@ public class SplashScreen extends AppCompatActivity {
 
     IMyRestaurantAPI myRestaurantAPI;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
+    AlertDialog dialog;
 
     @Override
     protected void onDestroy() {
@@ -62,6 +65,9 @@ public class SplashScreen extends AppCompatActivity {
                         AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
                             @Override
                             public void onSuccess(Account account) {
+
+                                dialog.show();
+
                                 compositeDisposable.add(myRestaurantAPI.getUser(Common.API_KEY, account.getId())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -81,8 +87,12 @@ public class SplashScreen extends AppCompatActivity {
                                         finish();
                                     }
 
+                                        dialog.dismiss();
                                         },
-                                        throwable -> Toast.makeText(SplashScreen.this,"[GET USER API] "+ throwable.getMessage(),Toast.LENGTH_SHORT).show()));
+                                        throwable -> {
+                                    dialog.dismiss();
+                                            Toast.makeText(SplashScreen.this,"[GET USER API] "+ throwable.getMessage(),Toast.LENGTH_SHORT).show();
+                                        }));
 
 
                             }
@@ -119,6 +129,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void init() {
+        dialog = new SpotsDialog.Builder().setContext(this).setCancelable(false).build();
         myRestaurantAPI = RetrofitClient.getInstance(Common.API_RESTAURANT_ENDPOINT).create(IMyRestaurantAPI.class);
     }
 
