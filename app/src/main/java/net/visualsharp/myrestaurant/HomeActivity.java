@@ -166,7 +166,8 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == android.R.id.home) {
+            finish();
             return true;
         }
 
@@ -201,7 +202,7 @@ public class HomeActivity extends AppCompatActivity
                 .setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss())
                 .setPositiveButton("OK", (dialog, which) -> {
                     Common.currentUser = null;
-
+                    Common.currentRestaurant = null;
                     AccountKit.logOut();
                     Intent intent = new Intent(HomeActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear all previous activity
