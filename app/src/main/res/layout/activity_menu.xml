@@ -67,6 +67,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <com.nex3z.notificationbadge.NotificationBadge
+            android:id="@+id/badge"
+            android:layout_gravity="top|right"
+            app:nbMaxTextLength="2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"></com.nex3z.notificationbadge.NotificationBadge>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
